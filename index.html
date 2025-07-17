@@ -19,7 +19,32 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+      /* Button Group Styling */
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
 
+/* Meta Info Styling */
+.executor-meta {
+    display: flex;
+    gap: 0.8rem;
+    margin: 0.8rem 0;
+    font-size: 0.9rem;
+}
+
+.executor-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    opacity: 0.8;
+}
+
+.executor-meta i {
+    color: #7b2fff;
+    font-size: 0.8rem;
+}
         body {
             background-color: var(--primary);
             color: var(--text);
@@ -1505,7 +1530,16 @@
                     showExecutor(executor);
                 });
             });
-
+            document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-executor]').forEach(card => {
+        card.querySelector('.btn[data-executor]').addEventListener('click', (e) => {
+            e.preventDefault();
+            const executorName = card.getAttribute('data-executor');
+            document.getElementById(`${executorName}-page`).style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+    });
+});
             document.querySelectorAll('[data-back]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
