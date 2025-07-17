@@ -19,14 +19,13 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-      /* Button Group Styling */
+
 .btn-group {
     display: flex;
     gap: 0.5rem;
     margin-top: 1rem;
 }
 
-/* Meta Info Styling */
 .executor-meta {
     display: flex;
     gap: 0.8rem;
@@ -52,7 +51,7 @@
             position: relative;
             min-height: 100vh;
         }
-        /* Executor Card Styling */
+
 .executor-card {
     background: rgba(20, 20, 35, 0.65);
     border-radius: 12px;
@@ -506,7 +505,7 @@
     </nav>
 
     <div class="container">
-        <!-- Home Page -->
+
         <div id="home-page">
             <h1 class="page-title">Real-Time Executor Dashboard</h1>
             <p class="page-subtitle">Monitor the status of all supported executors - 2025</p>
@@ -532,18 +531,17 @@
 
             <h2 class="section-title">Featured Executors</h2>
             <div class="executors-grid">
-                <!-- Velocity -->
+
                 <div class="executor-card" data-executor="velocity">
                     <div class="executor-header">
                         <div class="executor-name">Velocity</div>
-                        <div class="executor-status status-offline">Offline</div>
+                        <div class="executor-status status-online">Online</div>
                     </div>
                     <div class="executor-desc">Very fast internal exploit with 98% sunc rate and level 8 execution.</div>
                     <a href="#" class="btn" data-executor="velocity">View Details</a>
                     <a href="https://discord.gg/9ErtYS3KG5" class="btn btn-primary" target="_blank">Discord</a>
                 </div>
 
-                <!-- Xeno -->
                 <div class="executor-card" data-executor="xeno">
                     <div class="executor-header">
                         <div class="executor-name">Xeno</div>
@@ -554,7 +552,6 @@
                     <a href="https://discord.gg/xe-no" class="btn btn-primary" target="_blank">Discord</a>
                 </div>
 
-                <!-- Nexora -->
                 <div class="executor-card" data-executor="nexora">
                     <div class="executor-header">
                         <div class="executor-name">Nexora</div>
@@ -565,18 +562,6 @@
                     <a href="https://discord.gg/vnrzwWJSUR6" class="btn btn-primary" target="_blank">Discord</a>
                 </div>
 
-                <!-- Bytebreaker -->
-                <div class="executor-card" data-executor="bytebreaker">
-                    <div class="executor-header">
-                        <div class="executor-name">Bytebreaker</div>
-                        <div class="executor-status status-offline">Offline</div>
-                    </div>
-                    <div class="executor-desc">Keyless internal exploit with 98% sunc rate thanks to Quorum API.</div>
-                    <a href="#" class="btn" data-executor="bytebreaker">View Details</a>
-                    <a href="https://bytebreaker.cc" class="btn btn-primary" target="_blank">Website</a>
-                </div>
-
-                <!-- Cloudy -->
                 <div class="executor-card" data-executor="cloudy">
                     <div class="executor-header">
                         <div class="executor-name">Cloudy</div>
@@ -587,7 +572,6 @@
                     <a href="https://getcloudy.xyz" class="btn btn-primary" target="_blank">Download</a>
                 </div>
 
-                <!-- Arctic -->
                 <div class="executor-card" data-executor="arctic">
                     <div class="executor-header">
                         <div class="executor-name">Arctic</div>
@@ -598,10 +582,9 @@
                     <a href="https://discord.gg/Dxz5kPt8pn" class="btn btn-primary" target="_blank">Discord</a>
                 </div>
             </div>
-<!-- EXECUTOR_INSERTION_POINT -->
+
         </div>
 
-        <!-- Velocity Detail Page -->
         <div id="velocity-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -615,7 +598,7 @@
                     <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
                     <div class="fas fa-dollar-sign"></i> Free</div>
                 </div>
-                <div class="executor-status status-offline">Status: Offline</div>
+                <div class="executor-status status-online">Status: Online</div>
             </div>
 
             <div class="executor-content">
@@ -664,7 +647,7 @@
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Current Status</h3>
                         <div style="line-height: 1.6; opacity: 0.9;">
-                            Offline - Check Discord for updates
+                            Online - Check Discord for updates
                         </div>
                     </div>
 
@@ -680,7 +663,6 @@
             </div>
         </div>
 
-        <!-- Xeno Detail Page -->
         <div id="xeno-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -740,7 +722,7 @@
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Current Status</h3>
                         <div style="line-height: 1.6; opacity: 0.9;">
-                            Offline - Check Discord for updates
+                            Online - Check Discord for updates
                         </div>
                     </div>
 
@@ -756,7 +738,6 @@
             </div>
         </div>
 
-        <!-- Nexora Detail Page -->
         <div id="nexora-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -837,86 +818,6 @@
             </div>
         </div>
 
-        <!-- Bytebreaker Detail Page -->
-        <div id="bytebreaker-page" class="executor-detail">
-            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
-            <div class="executor-hero">
-                <h1 class="executor-title">Bytebreaker</h1>
-                <div class="executor-meta">
-                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
-                    <div class="meta-item"><i class="fas fa-sunc-alt"></i> 98% sunc Rate</div>
-                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
-                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
-                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
-                    <div class="fas fa-dollar-sign"></i> Free</div>
-                </div>
-                <div class="executor-status status-offline">Status: Offline</div>
-            </div>
-
-            <div class="executor-content">
-                <div class="executor-info">
-                    <div class="info-section">
-                        <h2 class="info-title">Overview</h2>
-                        <p class="info-text">Bytebreaker is a powerful internal executor with 98% sunc rate thanks to Quorum API. It features a decompiler, bug fixes, and excellent stability. The executor is completely free and keyless, making it accessible to everyone.</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h2 class="info-title">Features</h2>
-                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
-                            <li>Level 8 execution with 98% sunc rate</li>
-                            <li>Internal architecture for maximum performance</li>
-                            <li>Quorum API integration for better sunc</li>
-                            <li>Built-in decompiler and bug fixes</li>
-                            <li>Supports all script types</li>
-                            <li>Regular updates to bypass detection</li>
-                            <li>Completely free and keyless</li>
-                        </ul>
-                    </div>
-
-                    <div class="info-section">
-                        <h2 class="info-title">System Requirements</h2>
-                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
-                            <li>Windows 10 or 11 (64-bit)</li>
-                            <li>4GB RAM minimum (8GB recommended)</li>
-                            <li>DirectX 11 compatible GPU</li>
-                            <li>.NET Framework 4.8</li>
-                            <li>Visual C++ Redistributables</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="executor-sidebar">
-                    <div class="sidebar-card">
-                        <h3 class="sidebar-title">Quick Links</h3>
-                        <a href="https://bytebreaker.cc" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
-                            <i class="fas fa-external-link-alt"></i> Website
-                        </a>
-                        <a href="https://discord.gg/3hrgy27mBU" class="btn" target="_blank" style="display: block; text-align: center;">
-                            <i class="fab fa-discord"></i> Join Discord
-                        </a>
-                    </div>
-
-                    <div class="sidebar-card">
-                        <h3 class="sidebar-title">Current Status</h3>
-                        <div style="line-height: 1.6; opacity: 0.9;">
-                            Offline - Check Discord for updates
-                        </div>
-                    </div>
-
-                    <div class="sidebar-card">
-                        <h3 class="sidebar-title">Version History</h3>
-                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
-                            <p><strong>v1.5.0</strong> - 2025-06-20<br>Added Quorum API integration</p>
-                            <p><strong>v1.4.2</strong> - 2025-05-15<br>Improved decompiler</p>
-                            <p><strong>v1.3.5</strong> - 2025-04-10<br>Bug fixes and stability improvements</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cloudy Detail Page -->
         <div id="cloudy-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -994,7 +895,6 @@
             </div>
         </div>
 
-        <!-- Arctic Detail Page -->
         <div id="arctic-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -1098,7 +998,6 @@
             </div>
         </div>
 
-        <!-- Community Page -->
         <div id="community-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -1179,7 +1078,6 @@
             </div>
         </div>
 
-        <!-- Downloads Page -->
         <div id="downloads-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -1287,7 +1185,6 @@
             </div>
         </div>
 
-        <!-- Support Page -->
         <div id="support-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
@@ -1375,7 +1272,6 @@
             </div>
         </div>
 
-        <!-- About Page -->
         <div id="about-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
 
