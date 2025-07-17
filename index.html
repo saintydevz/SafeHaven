@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeHaven | Roblox Executors</title>
+    <style>
+        :root {
+            --primary: #0a0a12;
+            --secondary: #7b2fff;
+            --glass: rgba(20, 20, 35, 0.65);
+            --text: #e0e0e0;
+            --border: rgba(123, 47, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .square {
+            position: absolute;
+            background: rgba(123, 47, 255, 0.03);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(1px);
+            border-radius: 8px;
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translate(100px, -1000px) rotate(360deg);
+                opacity: 0.8;
+            }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, var(--secondary), #9a60ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(123, 47, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(123, 47, 255, 0) 0%,
+                rgba(123, 47, 255, 0.1) 50%,
+                rgba(123, 47, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .dashboard-card:hover::before {
+            opacity: 1;
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(30deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(30deg);
+            }
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(123, 47, 255, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .card-title i {
+            color: var(--secondary);
+        }
+
+        .card-desc {
+            opacity: 0.8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .executors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .executor-card {
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .executor-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(123, 47, 255, 0.3);
+        }
+
+        .executor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .executor-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .executor-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-online {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-offline {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .executor-desc {
+            opacity: 0.8;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: rgba(123, 47, 255, 0.1);
+            color: var(--secondary);
+            border: 1px solid rgba(123, 47, 255, 0.3);
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: rgba(123, 47, 255, 0.2);
+            border-color: rgba(123, 47, 255, 0.5);
+        }
+
+        .btn-primary {
+            background: rgba(123, 47, 255, 0.3);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: rgba(123, 47, 255, 0.4);
+        }
+
+        .executor-detail {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .executor-hero {
+            background: linear-gradient(135deg, rgba(123, 47, 255, 0.1), rgba(20, 20, 35, 0.7));
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .executor-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--secondary), #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .executor-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .meta-item i {
+            color: var(--secondary);
+        }
+
+        .executor-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .executor-info {
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
+        }
+
+        .info-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .info-text {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .executor-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-card {
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #9a60ff;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 5rem;
+            padding: 3rem;
+            background: var(--glass);
+            border-top: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-link {
+            color: var(--text);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+            color: var(--secondary);
+        }
+
+        .made-by {
+            font-size: 0.9rem;
+            opacity: 0.5;
+        }
+
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .pricing-table th, .pricing-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pricing-table th {
+            color: var(--secondary);
+            font-weight: 500;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="background" id="background"></div>
+
+    <nav>
+        <div class="nav-logo">SafeHaven</div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="community">Community</a>
+            <a href="#" class="nav-link" data-page="downloads">Downloads</a>
+            <a href="#" class="nav-link" data-page="support">Support</a>
+            <a href="#" class="nav-link" data-page="about">About</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home-page">
+            <h1 class="page-title">Real-Time Executor Dashboard</h1>
+            <p class="page-subtitle">Monitor the status of all supported executors - 2025</p>
+
+            <div class="dashboard">
+                <div class="dashboard-card">
+                    <div class="card-title"><i class="fas fa-heartbeat"></i> Status Monitor</div>
+                    <div class="card-desc">Live monitoring of all executor services with real-time updates and notifications.</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-title"><i class="fas fa-users"></i> Community Hub</div>
+                    <div class="card-desc">Connect with other users, share scripts, and get support from the community.</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-title"><i class="fas fa-download"></i> Download Center</div>
+                    <div class="card-desc">Secure access to all executor downloads with verified checksums and signatures.</div>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-title"><i class="fas fa-question-circle"></i> Support Portal</div>
+                    <div class="card-desc">Get help with executor issues and troubleshooting.</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Featured Executors</h2>
+            <div class="executors-grid">
+                <!-- Velocity -->
+                <div class="executor-card" data-executor="velocity">
+                    <div class="executor-header">
+                        <div class="executor-name">Velocity</div>
+                        <div class="executor-status status-offline">Offline</div>
+                    </div>
+                    <div class="executor-desc">Very fast internal exploit with 98% sync rate and level 8 execution.</div>
+                    <a href="#" class="btn" data-executor="velocity">View Details</a>
+                    <a href="https://discord.gg/9ErtYS3KG5" class="btn btn-primary" target="_blank">Discord</a>
+                </div>
+
+                <!-- Xeno -->
+                <div class="executor-card" data-executor="xeno">
+                    <div class="executor-header">
+                        <div class="executor-name">Xeno</div>
+                        <div class="executor-status status-offline">Offline</div>
+                    </div>
+                    <div class="executor-desc">External exploit with level 3 execution and good script compatibility.</div>
+                    <a href="#" class="btn" data-executor="xeno">View Details</a>
+                    <a href="https://discord.gg/xe-no" class="btn btn-primary" target="_blank">Discord</a>
+                </div>
+
+                <!-- Nexora -->
+                <div class="executor-card" data-executor="nexora">
+                    <div class="executor-header">
+                        <div class="executor-name">Nexora</div>
+                        <div class="executor-status status-offline">Offline</div>
+                    </div>
+                    <div class="executor-desc">High-end exploit with beautiful UI and excellent execution rates.</div>
+                    <a href="#" class="btn" data-executor="nexora">View Details</a>
+                    <a href="https://discord.gg/vnrzwWJSUR6" class="btn btn-primary" target="_blank">Discord</a>
+                </div>
+
+                <!-- Bytebreaker -->
+                <div class="executor-card" data-executor="bytebreaker">
+                    <div class="executor-header">
+                        <div class="executor-name">Bytebreaker</div>
+                        <div class="executor-status status-offline">Offline</div>
+                    </div>
+                    <div class="executor-desc">Keyless internal exploit with 98% sync rate thanks to Quorum API.</div>
+                    <a href="#" class="btn" data-executor="bytebreaker">View Details</a>
+                    <a href="https://bytebreaker.cc" class="btn btn-primary" target="_blank">Website</a>
+                </div>
+
+                <!-- Cloudy -->
+                <div class="executor-card" data-executor="cloudy">
+                    <div class="executor-header">
+                        <div class="executor-name">Cloudy</div>
+                        <div class="executor-status status-offline">Offline</div>
+                    </div>
+                    <div class="executor-desc">Keyless internal level 8 executor with 98% unc and supports all scripts.</div>
+                    <a href="#" class="btn" data-executor="cloudy">View Details</a>
+                    <a href="https://getcloudy.xyz" class="btn btn-primary" target="_blank">Download</a>
+                </div>
+
+                <!-- Arctic -->
+                <div class="executor-card" data-executor="arctic">
+                    <div class="executor-header">
+                        <div class="executor-name">Arctic</div>
+                        <div class="executor-status status-offline">Offline</div>
+                    </div>
+                    <div class="executor-desc">Key-based executor with 98% sync rate and level 8 execution.</div>
+                    <a href="#" class="btn" data-executor="arctic">View Details</a>
+                    <a href="https://discord.gg/Dxz5kPt8pn" class="btn btn-primary" target="_blank">Discord</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Velocity Detail Page -->
+        <div id="velocity-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Velocity</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% Sync Rate</div>
+                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
+                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                    <div class="fas fa-dollar-sign"></i> Free</div>
+                </div>
+                <div class="executor-status status-offline">Status: Offline</div>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Velocity is one of the fastest and most reliable Roblox executors available today. With near-perfect sync rates and level 8 execution, it handles even the most demanding scripts with ease. The internal nature of the exploit provides excellent performance and stability.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 98% sync rate</li>
+                            <li>Internal architecture for maximum performance</li>
+                            <li>Supports all major script types</li>
+                            <li>Regular updates to bypass Roblox patches</li>
+                            <li>Built-in script hub with auto-updating scripts</li>
+                            <li>Custom UI with theming options</li>
+                            <li>Completely free and keyless</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Windows 10 or 11 (64-bit)</li>
+                            <li>4GB RAM minimum (8GB recommended)</li>
+                            <li>DirectX 11 compatible GPU</li>
+                            <li>.NET Framework 4.8</li>
+                            <li>Visual C++ Redistributables</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://getvelocity.live" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="https://discord.gg/9ErtYS3KG5" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Offline - Check Discord for updates
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v2.5.1</strong> - 2025-06-15<br>Improved stability and sync rates</p>
+                            <p><strong>v2.5.0</strong> - 2025-05-28<br>Added new script hub features</p>
+                            <p><strong>v2.4.3</strong> - 2025-04-10<br>Security improvements</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Xeno Detail Page -->
+        <div id="xeno-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Xeno</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 3 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 81% Sync Rate</div>
+                    <div class="meta-item"><i class="fas fa-external-link-alt"></i> External</div>
+                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                    <div class="fas fa-dollar-sign"></i> Free</div>
+                </div>
+                <div class="executor-status status-offline">Status: Offline</div>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Xeno is a reliable external executor that provides good performance and script compatibility. While not as powerful as some internal options, it offers excellent stability and is less likely to be detected by anti-cheat systems.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 3 execution with 81% sync rate</li>
+                            <li>External architecture for better security</li>
+                            <li>Supports most common script types</li>
+                            <li>Simple and intuitive interface</li>
+                            <li>Built-in script executor with syntax highlighting</li>
+                            <li>Regular updates to maintain functionality</li>
+                            <li>Completely free and keyless</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Windows 10 or 11 (64-bit)</li>
+                            <li>2GB RAM minimum (4GB recommended)</li>
+                            <li>Any modern GPU</li>
+                            <li>.NET Framework 4.7.2</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://xeno.onl" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="https://discord.gg/xe-no" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Offline - Check Discord for updates
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v1.8.2</strong> - 2025-06-20<br>Improved script compatibility</p>
+                            <p><strong>v1.8.0</strong> - 2025-05-15<br>Added new UI themes</p>
+                            <p><strong>v1.7.5</strong> - 2025-04-02<br>Stability improvements</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nexora Detail Page -->
+        <div id="nexora-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Nexora</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 91% Sync Rate</div>
+                    <div class="meta-item"><i class="fas fa-mobile-alt"></i> Multi-Platform</div>
+                    <div class="meta-item"><i class="fas fa-palette"></i> Custom UI</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                    <div class="fas fa-dollar-sign"></i> Free</div>
+                </div>
+                <div class="executor-status status-offline">Status: Offline</div>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Nexora is a premium multi-platform executor with one of the most beautiful interfaces available. It offers high-level execution across Windows, Android, iOS, and MacOS, making it the most versatile option for Roblox exploitation.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 91% sync rate</li>
+                            <li>Available on Windows, Android, iOS, and MacOS</li>
+                            <li>Server-side execution options</li>
+                            <li>Stunning customizable UI with themes</li>
+                            <li>Built-in script hub with community scripts</li>
+                            <li>Regular updates with new features</li>
+                            <li>Completely free and keyless</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li><strong>Windows:</strong> 10/11 (64-bit), 4GB RAM</li>
+                            <li><strong>Android:</strong> 8.0+, 3GB RAM</li>
+                            <li><strong>iOS:</strong> iOS 14+, Jailbroken</li>
+                            <li><strong>MacOS:</strong> Big Sur+, Intel/Apple Silicon</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://getnexora.vercel.app" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="https://discord.gg/vnrzwWJSUR6" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            <div><strong>Windows:</strong> Offline</div>
+                            <div><strong>Android:</strong> Offline</div>
+                            <div><strong>iOS:</strong> Offline</div>
+                            <div><strong>MacOS:</strong> Offline</div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v3.2.0</strong> - 2025-06-18<br>Added new UI themes</p>
+                            <p><strong>v3.1.5</strong> - 2025-05-30<br>Improved Android performance</p>
+                            <p><strong>v3.1.0</strong> - 2025-04-22<br>Added server-side execution</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bytebreaker Detail Page -->
+        <div id="bytebreaker-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Bytebreaker</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% Sync Rate</div>
+                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
+                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                    <div class="fas fa-dollar-sign"></i> Free</div>
+                </div>
+                <div class="executor-status status-offline">Status: Offline</div>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Bytebreaker is a powerful internal executor with 98% sync rate thanks to Quorum API. It features a decompiler, bug fixes, and excellent stability. The executor is completely free and keyless, making it accessible to everyone.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 98% sync rate</li>
+                            <li>Internal architecture for maximum performance</li>
+                            <li>Quorum API integration for better sync</li>
+                            <li>Built-in decompiler and bug fixes</li>
+                            <li>Supports all script types</li>
+                            <li>Regular updates to bypass detection</li>
+                            <li>Completely free and keyless</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Windows 10 or 11 (64-bit)</li>
+                            <li>4GB RAM minimum (8GB recommended)</li>
+                            <li>DirectX 11 compatible GPU</li>
+                            <li>.NET Framework 4.8</li>
+                            <li>Visual C++ Redistributables</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://bytebreaker.cc" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-external-link-alt"></i> Website
+                        </a>
+                        <a href="https://discord.gg/3hrgy27mBU" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Offline - Check Discord for updates
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v1.5.0</strong> - 2025-06-20<br>Added Quorum API integration</p>
+                            <p><strong>v1.4.2</strong> - 2025-05-15<br>Improved decompiler</p>
+                            <p><strong>v1.3.5</strong> - 2025-04-10<br>Bug fixes and stability improvements</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloudy Detail Page -->
+        <div id="cloudy-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Cloudy</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% Sync Rate</div>
+                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
+                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                    <div class="fas fa-dollar-sign"></i> Free</div>
+                </div>
+                <div class="executor-status status-offline">Status: Offline</div>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Cloudy is a high-performance internal executor with 98% unc and level 8 execution. It supports all scripts and features a clean, user-friendly interface. The executor is completely free and keyless.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 98% unc</li>
+                            <li>Internal architecture for best performance</li>
+                            <li>Supports all script types</li>
+                            <li>Clean and intuitive UI</li>
+                            <li>Regular updates to maintain functionality</li>
+                            <li>Completely free and keyless</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Windows 10 or 11 (64-bit)</li>
+                            <li>4GB RAM minimum (8GB recommended)</li>
+                            <li>DirectX 11 compatible GPU</li>
+                            <li>.NET Framework 4.8</li>
+                            <li>Visual C++ Redistributables</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://getcloudy.xyz" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="https://discord.gg/BMaCEB3N3p" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Offline - Check Discord for updates
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v2.1.0</strong> - 2025-06-18<br>Improved sync rates</p>
+                            <p><strong>v2.0.5</strong> - 2025-05-30<br>Added new UI themes</p>
+                            <p><strong>v2.0.0</strong> - 2025-04-22<br>Complete rewrite</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arctic Detail Page -->
+        <div id="arctic-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Arctic</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% Sync Rate</div>
+                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
+                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Key System</div>
+                </div>
+                <div class="executor-status status-offline">Status: Offline</div>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Arctic is a premium executor with key-based access. It offers 98% sync rate and level 8 execution, supporting all scripts. While it has occasional injector bugs on specific PCs, it remains one of the most powerful options available.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 98% sync rate</li>
+                            <li>Internal architecture for maximum performance</li>
+                            <li>Supports all script types</li>
+                            <li>Regular updates to bypass detection</li>
+                            <li>Clean and intuitive UI</li>
+                            <li>Key-based access system</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Pricing Options</h2>
+                        <table class="pricing-table">
+                            <thead>
+                                <tr>
+                                    <th>Duration</th>
+                                    <th>PayPal</th>
+                                    <th>Robux</th>
+                                    <th>Boosts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1 Week</td>
+                                    <td>$2</td>
+                                    <td>250 RS</td>
+                                    <td>1 Boost</td>
+                                </tr>
+                                <tr>
+                                    <td>1 Month</td>
+                                    <td>$4</td>
+                                    <td>750 RS</td>
+                                    <td>2 Boosts*</td>
+                                </tr>
+                                <tr>
+                                    <td>3 Months</td>
+                                    <td>$7</td>
+                                    <td>2000 RS</td>
+                                    <td>3+ Boosts*</td>
+                                </tr>
+                                <tr>
+                                    <td>Lifetime</td>
+                                    <td>$12</td>
+                                    <td>3000 RS</td>
+                                    <td>N/A</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="info-text" style="margin-top: 1rem; font-size: 0.9rem;">* Boost options require you to maintain the boosts or the key will be automatically revoked.</p>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://discord.gg/Dxz5kPt8pn" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fab fa-discord"></i> Discord & Download
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Offline - Check Discord for updates
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v3.1.0</strong> - 2025-06-20<br>Improved injection success rate</p>
+                            <p><strong>v3.0.5</strong> - 2025-05-15<br>Added new payment options</p>
+                            <p><strong>v3.0.0</strong> - 2025-04-10<br>Complete rewrite</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Page -->
+        <div id="community-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Community Hub</h1>
+                <p class="info-text">Connect with other SafeHaven users and join our partnered executor communities.</p>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Official Discord Servers</h2>
+                        <div class="discord-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> SafeHaven</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Join the official SafeHaven community for updates and support.</p>
+                                <a href="https://discord.gg/PcK323uR6B" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Velocity</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Join the official Velocity community.</p>
+                                <a href="https://discord.gg/9ErtYS3KG5" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Xeno</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Connect with Xeno users and developers.</p>
+                                <a href="https://discord.gg/xe-no" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Nexora</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">The official Nexora community.</p>
+                                <a href="https://discord.gg/vnrzwWJSUR6" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Bytebreaker</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Join the Bytebreaker community.</p>
+                                <a href="https://discord.gg/3hrgy27mBU" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Cloudy</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Connect with Cloudy users.</p>
+                                <a href="https://discord.gg/BMaCEB3N3p" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Arctic</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Join the Arctic community.</p>
+                                <a href="https://discord.gg/Dxz5kPt8pn" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Community Guidelines</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p>1. Be respectful to all community members</p>
+                            <p>2. No sharing of malicious content</p>
+                            <p>3. Keep discussions on-topic</p>
+                            <p>4. Follow all Discord Terms of Service</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloads Page -->
+        <div id="downloads-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Download Center</h1>
+                <p class="info-text">Secure downloads for all supported executors. All files are scanned and verified before being made available.</p>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Available Executors</h2>
+                        <div class="download-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-bolt"></i> Velocity</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 2.5.1</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> 18.7 MB</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-06-15</p>
+                                <a href="https://getvelocity.live" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-external-link-alt"></i> Xeno</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 1.8.2</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> 12.3 MB</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-06-20</p>
+                                <a href="https://xeno.onl" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-mobile-alt"></i> Nexora</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 3.2.0</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> Varies by platform</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-06-18</p>
+                                <a href="https://getnexora.vercel.app" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-code"></i> Bytebreaker</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 1.5.0</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> 15.2 MB</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-06-20</p>
+                                <a href="https://bytebreaker.cc" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-cloud"></i> Cloudy</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 2.1.0</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> 16.5 MB</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-06-18</p>
+                                <a href="https://getcloudy.xyz" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-snowflake"></i> Arctic</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 3.1.0</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> 19.1 MB</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-06-20</p>
+                                <a href="https://discord.gg/Dxz5kPt8pn" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Download Instructions</h2>
+                        <ol class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Click the download button for your preferred executor</li>
+                            <li>Run the installer or extract the ZIP file</li>
+                            <li>Disable any antivirus temporarily (false positives are common)</li>
+                            <li>Run the executor as administrator</li>
+                            <li>Inject when in a Roblox game</li>
+                        </ol>
+                        <p class="info-text" style="margin-top: 1rem; color: #ff6b6b;"><strong>Warning:</strong> Only download from official sources. Unofficial copies may contain malware.</p>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Security Information</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>All downloads are:</strong></p>
+                            <p>• Scanned for malware</p>
+                            <p>• Verified with checksums</p>
+                            <p>• Served over HTTPS</p>
+                            <p>• From official sources</p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Common Issues</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>Antivirus blocking?</strong><br>Add an exception for the executor</p>
+                            <p><strong>Not injecting?</strong><br>Run as administrator</p>
+                            <p><strong>Crashing?</strong><br>Update your .NET Framework</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Page -->
+        <div id="support-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">Support Portal</h1>
+                <p class="info-text">Get help with executor issues by joining our Discord community.</p>
+
+                <a href="https://discord.gg/PcK323uR6B" class="btn btn-primary" target="_blank" style="margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <i class="fab fa-discord"></i> Join Support Discord
+                </a>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Frequently Asked Questions</h2>
+                        <div class="faq-item" style="margin-bottom: 1.5rem;">
+                            <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">Why is my executor being flagged by antivirus?</h3>
+                            <p class="info-text">Most Roblox executors are detected as false positives by antivirus software because they modify the Roblox client. You'll need to add an exception for the executor in your antivirus settings.</p>
+                        </div>
+                        <div class="faq-item" style="margin-bottom: 1.5rem;">
+                            <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">How do I know which executor to choose?</h3>
+                            <p class="info-text">Internal executors like Velocity offer better performance but may have higher detection rates. External executors like Xeno are more stable but have fewer features. Multi-platform options like Nexora work across devices.</p>
+                        </div>
+                        <div class="faq-item" style="margin-bottom: 1.5rem;">
+                            <h3 style="color: var(--secondary); margin-bottom: 0.5rem;">My scripts aren't working, what should I do?</h3>
+                            <p class="info-text">First check if the executor is up-to-date. Then verify the script is made for your executor version. Some scripts may need to be updated after Roblox patches.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">Troubleshooting Guide</h2>
+                        <div class="troubleshooting-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-exclamation-triangle"></i> Executor Not Injecting</h3>
+                                <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                                    <p>1. Run as administrator</p>
+                                    <p>2. Disable antivirus temporarily</p>
+                                    <p>3. Update your executor</p>
+                                    <p>4. Reinstall if needed</p>
+                                </div>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-gamepad"></i> Game Crashes</h3>
+                                <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                                    <p>1. Try different injection timing</p>
+                                    <p>2. Disable heavy scripts</p>
+                                    <p>3. Check for memory leaks</p>
+                                    <p>4. Update graphics drivers</p>
+                                </div>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-bug"></i> Script Errors</h3>
+                                <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                                    <p>1. Check script compatibility</p>
+                                    <p>2. Update the script</p>
+                                    <p>3. Try a different executor</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Support Channels</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p>Join our Discord for support with any executor issues:</p>
+                            <a href="https://discord.gg/PcK323uR6B" class="btn" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                <i class="fab fa-discord"></i> SafeHaven Discord
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Compatibility Matrix</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>Windows 10:</strong> All executors</p>
+                            <p><strong>Windows 11:</strong> All executors</p>
+                            <p><strong>Android:</strong> Nexora only</p>
+                            <p><strong>MacOS:</strong> Nexora only</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div id="about-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="executor-hero">
+                <h1 class="executor-title">About SafeHaven</h1>
+                <p class="info-text">The premier hub for Roblox executor information, status monitoring, and community resources.</p>
+            </div>
+
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Our Mission</h2>
+                        <p class="info-text">SafeHaven was created in 2025 to provide a centralized, reliable source of information about Roblox executors. We aim to:</p>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8; margin-top: 1rem;">
+                            <li>Offer real-time status monitoring for all major executors</li>
+                            <li>Provide verified download links to prevent malware infections</li>
+                            <li>Educate users about safe exploitation practices</li>
+                            <li>Build a community of responsible script developers</li>
+                            <li>Maintain up-to-date compatibility information</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-section">
+                        <h2 class="info-title">The Creator</h2>
+                        <div style="display: flex; gap: 2rem; align-items: center; margin-top: 1.5rem;">
+                            <div style="width: 100px; height: 100px; background: rgba(123, 47, 255, 0.1); border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user" style="font-size: 2.5rem; color: var(--secondary);"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: white; margin-bottom: 0.5rem;">Saint</h3>
+                                <p class="info-text">With over 5 years of experience in the Roblox exploitation scene, Saint created SafeHaven to bring transparency and reliability to the community.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Core Values</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>Transparency:</strong> Clear status reporting</p>
+                            <p><strong>Security:</strong> Verified downloads only</p>
+                            <p><strong>Community:</strong> User-focused resources</p>
+                            <p><strong>Innovation:</strong> Always improving</p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Join Our Community</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p>Connect with other SafeHaven users:</p>
+                            <a href="https://discord.gg/PcK323uR6B" class="btn" target="_blank" style="display: block; text-align: center; margin-top: 0.5rem;">
+                                <i class="fab fa-discord"></i> Discord Server
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#" class="footer-link" data-page="home">Home</a>
+            <a href="#" class="footer-link" data-page="community">Community</a>
+            <a href="#" class="footer-link" data-page="downloads">Downloads</a>
+            <a href="#" class="footer-link" data-page="support">Support</a>
+            <a href="#" class="footer-link" data-page="about">About</a>
+            <a href="#" class="footer-link">Terms</a>
+            <a href="#" class="footer-link">Privacy</a>
+        </div>
+        <p class="made-by">Made with ❤️ by Saint | © 2025 SafeHaven</p>
+    </footer>
+
+    <script>
+
+        function createBackground() {
+            const background = document.getElementById('background');
+            const squareCount = 15;
+
+            for (let i = 0; i < squareCount; i++) {
+                const square = document.createElement('div');
+                square.classList.add('square');
+
+                const size = Math.random() * 80 + 40;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                const delay = Math.random() * 10;
+                const duration = Math.random() * 30 + 20;
+                const opacity = Math.random() * 0.4 + 0.4;
+
+                square.style.width = `${size}px`;
+                square.style.height = `${size}px`;
+                square.style.left = `${posX}px`;
+                square.style.top = `${posY}px`;
+                square.style.animationDelay = `${delay}s`;
+                square.style.animationDuration = `${duration}s`;
+                square.style.opacity = opacity;
+
+                background.appendChild(square);
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('[id$="-page"]').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById(pageId).style.display = 'block';
+        }
+
+        function showExecutor(executorId) {
+            document.querySelectorAll('[id$="-page"]').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById(executorId).style.display = 'block';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            createBackground();
+            showPage('home-page');
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.getAttribute('data-page') + '-page';
+                    showPage(page);
+
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+
+            document.querySelectorAll('[data-executor]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (el.tagName === 'A') e.preventDefault();
+                    const executor = el.getAttribute('data-executor') + '-page';
+                    showExecutor(executor);
+                });
+            });
+
+            document.querySelectorAll('[data-back]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = btn.getAttribute('data-back') + '-page';
+                    showPage(page);
+
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector(`.nav-link[data-page="${btn.getAttribute('data-back')}"]`).classList.add('active');
+                });
+            });
+
+            document.querySelectorAll('.footer-link[data-page]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.getAttribute('data-page') + '-page';
+                    showPage(page);
+
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector(`.nav-link[data-page="${link.getAttribute('data-page')}"]`).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
