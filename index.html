@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafeHaven - Verified Executors</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
             --primary: #0a0a12;
             --secondary: #7b2fff;
+            --accent: #9a60ff;
             --glass: rgba(20, 20, 35, 0.65);
             --text: #e0e0e0;
             --border: rgba(123, 47, 255, 0.15);
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
         }
 
         * {
@@ -20,30 +25,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-.btn-group {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.executor-meta {
-    display: flex;
-    gap: 0.8rem;
-    margin: 0.8rem 0;
-    font-size: 0.9rem;
-}
-
-.executor-meta span {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    opacity: 0.8;
-}
-
-.executor-meta i {
-    color: #7b2fff;
-    font-size: 0.8rem;
-}
         body {
             background-color: var(--primary);
             color: var(--text);
@@ -52,35 +33,6 @@
             min-height: 100vh;
         }
 
-.executor-card {
-    background: rgba(20, 20, 35, 0.65);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(123, 47, 255, 0.15);
-    transition: all 0.3s ease;
-    margin-bottom: 1.5rem;
-}
-
-.executor-meta {
-    display: flex;
-    gap: 1rem;
-    margin: 1rem 0;
-    flex-wrap: wrap;
-}
-
-.executor-meta span {
-    background: rgba(123, 47, 255, 0.1);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.executor-meta i {
-    color: #7b2fff;
-}
         .background {
             position: fixed;
             top: 0;
@@ -101,17 +53,21 @@
         }
 
         @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-                opacity: 0.8;
-            }
-            50% {
-                opacity: 0.4;
-            }
-            100% {
-                transform: translate(100px, -1000px) rotate(360deg);
-                opacity: 0.8;
-            }
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { opacity: 0.4; }
+            100% { transform: translate(100px, -1000px) rotate(360deg); opacity: 0.8; }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(123, 47, 255, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(123, 47, 255, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(123, 47, 255, 0.3); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         nav {
@@ -130,9 +86,10 @@
         .nav-logo {
             font-size: 1.8rem;
             font-weight: bold;
-            background: linear-gradient(90deg, var(--secondary), #9a60ff);
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: glow 3s infinite;
         }
 
         .nav-links {
@@ -153,10 +110,100 @@
             background: rgba(123, 47, 255, 0.1);
         }
 
+        .nav-link.active {
+            background: rgba(123, 47, 255, 0.2);
+            border: 1px solid var(--border);
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--secondary), transparent);
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            align-items: center;
+        }
+
+        .search-bar {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(123, 47, 255, 0.3);
+        }
+
+        .platform-filter {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--glass);
+            padding: 0.5rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .platform-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .platform-btn:hover {
+            background: rgba(123, 47, 255, 0.1);
+        }
+
+        .platform-btn.active {
+            background: rgba(123, 47, 255, 0.2);
+            border-color: var(--border);
         }
 
         .dashboard {
@@ -179,6 +226,11 @@
             overflow: hidden;
         }
 
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(123, 47, 255, 0.3);
+        }
+
         .dashboard-card::before {
             content: '';
             position: absolute;
@@ -186,12 +238,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                rgba(123, 47, 255, 0) 0%,
-                rgba(123, 47, 255, 0.1) 50%,
-                rgba(123, 47, 255, 0) 100%
-            );
+            background: linear-gradient(to bottom right, rgba(123, 47, 255, 0) 0%, rgba(123, 47, 255, 0.1) 50%, rgba(123, 47, 255, 0) 100%);
             transform: rotate(30deg);
             transition: all 0.6s ease;
             opacity: 0;
@@ -203,17 +250,8 @@
         }
 
         @keyframes shine {
-            0% {
-                transform: translateX(-100%) rotate(30deg);
-            }
-            100% {
-                transform: translateX(100%) rotate(30deg);
-            }
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(123, 47, 255, 0.3);
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
         }
 
         .card-title {
@@ -256,6 +294,7 @@
         .executor-card:hover {
             transform: translateY(-5px);
             border-color: rgba(123, 47, 255, 0.3);
+            animation: pulse 1s ease;
         }
 
         .executor-header {
@@ -281,14 +320,20 @@
 
         .status-online {
             background: rgba(46, 204, 113, 0.15);
-            color: #2ecc71;
+            color: var(--success);
             border: 1px solid rgba(46, 204, 113, 0.3);
         }
 
         .status-offline {
             background: rgba(231, 76, 60, 0.15);
-            color: #e74c3c;
+            color: var(--danger);
             border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .status-updating {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(243, 156, 18, 0.3);
         }
 
         .executor-desc {
@@ -297,8 +342,38 @@
             line-height: 1.5;
         }
 
+        .executor-platforms {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .platform-tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(123, 47, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .platform-tag i {
+            color: var(--secondary);
+            font-size: 0.8rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             padding: 0.6rem 1.2rem;
             background: rgba(123, 47, 255, 0.1);
             color: var(--secondary);
@@ -307,9 +382,8 @@
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
-            margin-top: 0.5rem;
-            margin-right: 0.5rem;
             font-size: 0.9rem;
+            cursor: pointer;
         }
 
         .btn:hover {
@@ -332,8 +406,8 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .executor-hero {
@@ -343,12 +417,25 @@
             margin-bottom: 2rem;
             border: 1px solid var(--border);
             backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .executor-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(123, 47, 255, 0.1), transparent 70%);
+            z-index: -1;
         }
 
         .executor-title {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--secondary), #b388ff);
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -435,7 +522,7 @@
         }
 
         .back-btn:hover {
-            color: #9a60ff;
+            color: var(--accent);
         }
 
         footer {
@@ -487,8 +574,48 @@
             color: var(--secondary);
             font-weight: 500;
         }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background: var(--glass);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .platform-filter {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .executor-content {
+                grid-template-columns: 1fr;
+            }
+
+            .executors-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="background" id="background"></div>
@@ -505,10 +632,21 @@
     </nav>
 
     <div class="container">
-
         <div id="home-page">
             <h1 class="page-title">Real-Time Executor Dashboard</h1>
             <p class="page-subtitle">Monitor the status of all supported executors - 2025</p>
+
+            <div class="search-container">
+                <input type="text" class="search-bar" id="executor-search" placeholder="Search for an executor...">
+                <div class="platform-filter">
+                    <button class="platform-btn active" data-platform="all">All</button>
+                    <button class="platform-btn" data-platform="windows">Windows</button>
+                    <button class="platform-btn" data-platform="android">Android</button>
+                    <button class="platform-btn" data-platform="ios">iOS</button>
+                    <button class="platform-btn" data-platform="mac">Mac</button>
+                    <button class="platform-btn" data-platform="vng">VNG</button>
+                </div>
+            </div>
 
             <div class="dashboard">
                 <div class="dashboard-card">
@@ -530,100 +668,188 @@
             </div>
 
             <h2 class="section-title">Featured Executors</h2>
-            <div class="executors-grid">
-
-                <div class="executor-card" data-executor="velocity">
+            <div class="executors-grid" id="executors-container">
+                <div class="executor-card" data-executor="velocity" data-platforms="windows">
                     <div class="executor-header">
                         <div class="executor-name">Velocity</div>
                         <div class="executor-status status-online">Online</div>
                     </div>
                     <div class="executor-desc">Very fast internal exploit with 98% sunc rate and level 8 execution.</div>
-                    <a href="#" class="btn" data-executor="velocity">View Details</a>
-                    <a href="https://discord.gg/9ErtYS3KG5" class="btn btn-primary" target="_blank">Discord</a>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="velocity">View Details</a>
+                        <a href="https://discord.gg/9ErtYS3KG5" class="btn btn-primary" target="_blank">Discord</a>
+                    </div>
                 </div>
-                   <div class="executor-card" data-executor="Dynamic">
+
+                <div class="executor-card" data-executor="dynamic" data-platforms="windows">
                     <div class="executor-header">
                         <div class="executor-name">Dynamic</div>
                         <div class="executor-status status-offline">Offline</div>
                     </div>
                     <div class="executor-desc">Very fast internal exploit with 98% sunc rate and level 8 execution.</div>
-                    <a href="#" class="btn" data-executor="Dynamic">View Details</a>
-                    <a href="https://discord.gg/getdynamic" class="btn btn-primary" target="_blank">Discord</a>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="dynamic">View Details</a>
+                        <a href="https://discord.gg/getdynamic" class="btn btn-primary" target="_blank">Discord</a>
+                    </div>
                 </div>
 
-                <div class="executor-card" data-executor="xeno">
+                <div class="executor-card" data-executor="xeno" data-platforms="windows">
                     <div class="executor-header">
                         <div class="executor-name">Xeno</div>
                         <div class="executor-status status-online">Online</div>
                     </div>
                     <div class="executor-desc">External exploit with level 3 execution and good script compatibility.</div>
-                    <a href="#" class="btn" data-executor="xeno">View Details</a>
-                    <a href="https://discord.gg/xe-no" class="btn btn-primary" target="_blank">Discord</a>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="xeno">View Details</a>
+                        <a href="https://discord.gg/xe-no" class="btn btn-primary" target="_blank">Discord</a>
+                    </div>
                 </div>
 
-                <div class="executor-card" data-executor="nexora">
+                <div class="executor-card" data-executor="nexora" data-platforms="windows android ios mac">
                     <div class="executor-header">
                         <div class="executor-name">Nexora</div>
                         <div class="executor-status status-offline">Offline</div>
                     </div>
                     <div class="executor-desc">High-end exploit with beautiful UI and excellent execution rates.</div>
-                    <a href="#" class="btn" data-executor="nexora">View Details</a>
-                    <a href="https://discord.gg/vnrzwWJSUR6" class="btn btn-primary" target="_blank">Discord</a>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                        <span class="platform-tag"><i class="fab fa-android"></i> Android</span>
+                        <span class="platform-tag"><i class="fab fa-apple"></i> iOS</span>
+                        <span class="platform-tag"><i class="fab fa-apple"></i> Mac</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="nexora">View Details</a>
+                        <a href="https://discord.gg/vnrzwWJSUR6" class="btn btn-primary" target="_blank">Discord</a>
+                    </div>
                 </div>
 
-                <div class="executor-card" data-executor="cloudy">
+                <div class="executor-card" data-executor="cloudy" data-platforms="windows">
                     <div class="executor-header">
                         <div class="executor-name">Cloudy</div>
                         <div class="executor-status status-offline">Offline</div>
                     </div>
                     <div class="executor-desc">Keyless internal level 8 executor with 98% unc and supports all scripts.</div>
-                    <a href="#" class="btn" data-executor="cloudy">View Details</a>
-                    <a href="https://getcloudy.xyz" class="btn btn-primary" target="_blank">Download</a>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="cloudy">View Details</a>
+                        <a href="https://getcloudy.xyz" class="btn btn-primary" target="_blank">Download</a>
+                    </div>
                 </div>
 
-
-                <div class="executor-card" data-executor="arctic">
+                <div class="executor-card" data-executor="arctic" data-platforms="windows">
                     <div class="executor-header">
                         <div class="executor-name">Arctic</div>
                         <div class="executor-status status-offline">Offline</div>
                     </div>
                     <div class="executor-desc">Key-based executor with 98% sunc rate and level 8 execution.</div>
-                    <a href="#" class="btn" data-executor="arctic">View Details</a>
-                    <a href="https://discord.gg/Dxz5kPt8pn" class="btn btn-primary" target="_blank">Discord</a>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="arctic">View Details</a>
+                        <a href="https://discord.gg/Dxz5kPt8pn" class="btn btn-primary" target="_blank">Discord</a>
+                    </div>
+                </div>
+
+                <div class="executor-card" data-executor="krnl" data-platforms="windows android ios vng">
+                    <div class="executor-header">
+                        <div class="executor-name">Krnl</div>
+                        <div class="executor-status status-online">Online</div>
+                    </div>
+                    <div class="executor-desc">Undetected multi-platform executor with free key system and excellent performance.</div>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                        <span class="platform-tag"><i class="fab fa-android"></i> Android</span>
+                        <span class="platform-tag"><i class="fab fa-apple"></i> iOS</span>
+                        <span class="platform-tag"><i class="fas fa-mobile-alt"></i> VNG</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="krnl">View Details</a>
+                        <a href="https://krnl.cat" class="btn btn-primary" target="_blank">Website</a>
+                    </div>
+                </div>
+
+                <div class="executor-card" data-executor="ronix" data-platforms="windows android mac vng">
+                    <div class="executor-header">
+                        <div class="executor-name">Ronix</div>
+                        <div class="executor-status status-online">Online</div>
+                    </div>
+                    <div class="executor-desc">100% SUNC keyless executor with own scripts, Windows version is detected.</div>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                        <span class="platform-tag"><i class="fab fa-android"></i> Android</span>
+                        <span class="platform-tag"><i class="fab fa-apple"></i> Mac</span>
+                        <span class="platform-tag"><i class="fas fa-mobile-alt"></i> VNG</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="ronix">View Details</a>
+                        <a href="https://ronixstudios.com" class="btn btn-primary" target="_blank">Website</a>
+                    </div>
+                </div>
+
+                <div class="executor-card" data-executor="sirhurt" data-platforms="windows">
+                    <div class="executor-header">
+                        <div class="executor-name">SirHurt</div>
+                        <div class="executor-status status-online">Online</div>
+                    </div>
+                    <div class="executor-desc">Paid internal executor with 100% SUNC and UNC level 8 execution.</div>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="sirhurt">View Details</a>
+                        <a href="#" class="btn btn-primary" target="_blank">Purchase</a>
+                    </div>
+                </div>
+
+                <div class="executor-card" data-executor="solara" data-platforms="windows">
+                    <div class="executor-header">
+                        <div class="executor-name">Solara</div>
+                        <div class="executor-status status-online">Online</div>
+                    </div>
+                    <div class="executor-desc">Keyless external executor with 66% UNC and 51% SUNC levels.</div>
+                    <div class="executor-platforms">
+                        <span class="platform-tag"><i class="fab fa-windows"></i> Windows</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="#" class="btn" data-executor="solara">View Details</a>
+                        <a href="https://getsolara.dev" class="btn btn-primary" target="_blank">Website</a>
+                    </div>
                 </div>
             </div>
-
-
-
-
-
-
-<!-- EXECUTOR_INSERTION_POINT -->
         </div>
 
         <div id="velocity-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Velocity</h1>
                 <div class="executor-meta">
                     <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
-                    <div class="meta-item"><i class="fas fa-sunc-alt"></i> 98% sunc Rate</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% sunc Rate</div>
                     <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
-                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fab fa-windows"></i> Windows 10/11</div>
                     <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
-                    <div class="fas fa-dollar-sign"></i> Free</div>
+                    <div class="meta-item"><i class="fas fa-dollar-sign"></i> Free</div>
                 </div>
                 <div class="executor-status status-online">Status: Online</div>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
                         <h2 class="info-title">Overview</h2>
                         <p class="info-text">Velocity is one of the fastest and most reliable Roblox executors available today. With near-perfect sunc rates and level 8 execution, it handles even the most demanding scripts with ease. The internal nature of the exploit provides excellent performance and stability.</p>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Features</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -636,7 +862,6 @@
                             <li>Completely free and keyless</li>
                         </ul>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">System Requirements</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -648,7 +873,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Quick Links</h3>
@@ -659,14 +883,12 @@
                             <i class="fab fa-discord"></i> Join Discord
                         </a>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Current Status</h3>
                         <div style="line-height: 1.6; opacity: 0.9;">
                             Online - Check Discord for updates
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Version History</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
@@ -678,107 +900,27 @@
                 </div>
             </div>
         </div>
-      <div id="Velocitya-ZX-page" class="executor-detail">
 
-</div>
-<!-- Community Page -->
-        <div id="xeno-page" class="executor-detail">
+        <div id="dynamic-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
-            <div class="executor-hero">
-                <h1 class="executor-title">Xeno</h1>
-                <div class="executor-meta">
-                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 3 Execution</div>
-                    <div class="meta-item"><i class="fas fa-sunc-alt"></i> 81% unc Rate</div>
-                    <div class="meta-item"><i class="fas fa-external-link-alt"></i> External</div>
-                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
-                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
-                    <div class="fas fa-dollar-sign"></i> Free</div>
-                </div>
-                <div class="executor-status status-online">Status: Online</div>
-            </div>
-
-            <div class="executor-content">
-                <div class="executor-info">
-                    <div class="info-section">
-                        <h2 class="info-title">Overview</h2>
-                        <p class="info-text">Xeno is a reliable external executor that provides good performance and script compatibility. While not as powerful as some internal options, it offers excellent stability and is less likely to be detected by anti-cheat systems.</p>
-                    </div>
-
-                    <div class="info-section">
-                        <h2 class="info-title">Features</h2>
-                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
-                            <li>Level 3 execution with 81% unc rate</li>
-                            <li>External architecture for better security</li>
-                            <li>Supports most common script types</li>
-                            <li>Simple and intuitive interface</li>
-                            <li>Built-in script executor with syntax highlighting</li>
-                            <li>Regular updates to maintain functionality</li>
-                            <li>Completely free and keyless</li>
-                        </ul>
-                    </div>
-
-                    <div class="info-section">
-                        <h2 class="info-title">System Requirements</h2>
-                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
-                            <li>Windows 10 or 11 (64-bit)</li>
-                            <li>2GB RAM minimum (4GB recommended)</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="executor-sidebar">
-                    <div class="sidebar-card">
-                        <h3 class="sidebar-title">Quick Links</h3>
-                        <a href="https://xeno.onl" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
-                            <i class="fas fa-download"></i> Download
-                        </a>
-                        <a href="https://discord.gg/xe-no" class="btn" target="_blank" style="display: block; text-align: center;">
-                            <i class="fab fa-discord"></i> Join Discord
-                        </a>
-                    </div>
-
-                    <div class="sidebar-card">
-                        <h3 class="sidebar-title">Current Status</h3>
-                        <div style="line-height: 1.6; opacity: 0.9;">
-                            Online - Check Discord for updates
-                        </div>
-                    </div>
-
-                    <div class="sidebar-card">
-                        <h3 class="sidebar-title">Version History</h3>
-                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
-                            <p><strong>v1.2.40</strong> - 2025-07-12<br>Updated to latest roblox ver</p>
-                            <p><strong>v1.2.35</strong> - 2025-06-25<br>Updated to latest roblox ver</p>
-                            <p><strong>v1.2.30</strong> - 2025-06-17<br>Updated to latest roblox ver</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-         <div id="Dynamic-page" class="executor-detail">
-            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Dynamic</h1>
                 <div class="executor-meta">
                     <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
-                    <div class="meta-item"><i class="fas fa-sunc-alt"></i> 98% unc& sUNC Rate</div>
-                    <div class="meta-item"><i class="fas fa-external-link-alt"></i> Internal</div>
-                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% unc & sUNC Rate</div>
+                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
+                    <div class="meta-item"><i class="fab fa-windows"></i> Windows 10/11</div>
                     <div class="meta-item"><i class="fas fa-key"></i> N/A (Not Sure)</div>
-                    <div class="fas fa-dollar-sign"></i> Free</div>
+                    <div class="meta-item"><i class="fas fa-dollar-sign"></i> Free</div>
                 </div>
-                <div class="executor-status status-online">Offline: Offline</div>
+                <div class="executor-status status-offline">Status: Offline</div>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
                         <h2 class="info-title">Overview</h2>
                         <p class="info-text">Dynamic is an upcoming project by 1arize it will be one of the best executors.</p>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Features</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -791,7 +933,6 @@
                             <li>Completely free</li>
                         </ul>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">System Requirements</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -800,7 +941,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Quick Links</h3>
@@ -811,14 +951,12 @@
                             <i class="fab fa-discord"></i> Join Discord
                         </a>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Current Status</h3>
                         <div style="line-height: 1.6; opacity: 0.9;">
                             Offline - Check Discord for updates
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Version History</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
@@ -831,29 +969,94 @@
             </div>
         </div>
 
+        <div id="xeno-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <div class="executor-hero">
+                <h1 class="executor-title">Xeno</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 3 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 81% unc Rate</div>
+                    <div class="meta-item"><i class="fas fa-external-link-alt"></i> External</div>
+                    <div class="meta-item"><i class="fab fa-windows"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                    <div class="meta-item"><i class="fas fa-dollar-sign"></i> Free</div>
+                </div>
+                <div class="executor-status status-online">Status: Online</div>
+            </div>
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Xeno is a reliable external executor that provides good performance and script compatibility. While not as powerful as some internal options, it offers excellent stability and is less likely to be detected by anti-cheat systems.</p>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 3 execution with 81% unc rate</li>
+                            <li>External architecture for better security</li>
+                            <li>Supports most common script types</li>
+                            <li>Simple and intuitive interface</li>
+                            <li>Built-in script executor with syntax highlighting</li>
+                            <li>Regular updates to maintain functionality</li>
+                            <li>Completely free and keyless</li>
+                        </ul>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Windows 10 or 11 (64-bit)</li>
+                            <li>2GB RAM minimum (4GB recommended)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://xeno.onl" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="https://discord.gg/xe-no" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Online - Check Discord for updates
+                        </div>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v1.2.40</strong> - 2025-07-12<br>Updated to latest roblox ver</p>
+                            <p><strong>v1.2.35</strong> - 2025-06-25<br>Updated to latest roblox ver</p>
+                            <p><strong>v1.2.30</strong> - 2025-06-17<br>Updated to latest roblox ver</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="nexora-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Nexora</h1>
                 <div class="executor-meta">
                     <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
-                    <div class="meta-item"><i class="fas fa-sunc-alt"></i> 91% sunc Rate</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 91% sunc Rate</div>
                     <div class="meta-item"><i class="fas fa-mobile-alt"></i> Multi-Platform</div>
                     <div class="meta-item"><i class="fas fa-palette"></i> Custom UI</div>
                     <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
-                    <div class="fas fa-dollar-sign"></i> Free</div>
+                    <div class="meta-item"><i class="fas fa-dollar-sign"></i> Free</div>
                 </div>
                 <div class="executor-status status-offline">Status: Offline</div>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
                         <h2 class="info-title">Overview</h2>
                         <p class="info-text">Nexora is a premium multi-platform executor with one of the most beautiful interfaces available. It offers high-level execution across Windows, Android, iOS, and MacOS, making it the most versatile option for Roblox exploitation.</p>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Features</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -866,7 +1069,6 @@
                             <li>Completely free and keyless</li>
                         </ul>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">System Requirements</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -877,7 +1079,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Quick Links</h3>
@@ -888,7 +1089,6 @@
                             <i class="fab fa-discord"></i> Join Discord
                         </a>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Current Status</h3>
                         <div style="line-height: 1.6; opacity: 0.9;">
@@ -898,7 +1098,6 @@
                             <div><strong>MacOS:</strong> Offline</div>
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Version History</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
@@ -911,44 +1110,26 @@
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-<!-- DETAIL_INSERTION_POINT -->
-
-
-
         <div id="cloudy-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Cloudy</h1>
                 <div class="executor-meta">
                     <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
-                    <div class="meta-item"><i class="fas fa-sunc-alt"></i> 98% sunc Rate</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% sunc Rate</div>
                     <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
-                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fab fa-windows"></i> Windows 10/11</div>
                     <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
-                    <div class="fas fa-dollar-sign"></i> Free</div>
+                    <div class="meta-item"><i class="fas fa-dollar-sign"></i> Free</div>
                 </div>
                 <div class="executor-status status-offline">Status: Offline</div>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
                         <h2 class="info-title">Overview</h2>
                         <p class="info-text">Cloudy is a high-performance internal executor with 98% unc and level 8 execution. It supports all scripts and features a clean, user-friendly interface. The executor is completely free and keyless.</p>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Features</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -960,7 +1141,6 @@
                             <li>Completely free and keyless</li>
                         </ul>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">System Requirements</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -972,7 +1152,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Quick Links</h3>
@@ -983,14 +1162,12 @@
                             <i class="fab fa-discord"></i> Join Discord
                         </a>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Current Status</h3>
                         <div style="line-height: 1.6; opacity: 0.9;">
                             Offline - Check Discord for updates
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Version History</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
@@ -1005,26 +1182,23 @@
 
         <div id="arctic-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Arctic</h1>
                 <div class="executor-meta">
                     <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
-                    <div class="meta-item"><i class="fas fa-sunc-alt"></i> 98% sunc Rate</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 98% sunc Rate</div>
                     <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
-                    <div class="meta-item"><i class="fas fa-tv"></i> Windows 10/11</div>
+                    <div class="meta-item"><i class="fab fa-windows"></i> Windows 10/11</div>
                     <div class="meta-item"><i class="fas fa-key"></i> Key System</div>
                 </div>
                 <div class="executor-status status-offline">Status: Offline</div>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
                         <h2 class="info-title">Overview</h2>
                         <p class="info-text">Arctic is a premium executor with key-based access. It offers 98% sunc rate and level 8 execution, supporting all scripts. While it has occasional injector bugs on specific PCs, it remains one of the most powerful options available.</p>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Features</h2>
                         <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -1036,7 +1210,6 @@
                             <li>Key-based access system</li>
                         </ul>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Pricing Options</h2>
                         <table class="pricing-table">
@@ -1078,7 +1251,6 @@
                         <p class="info-text" style="margin-top: 1rem; font-size: 0.9rem;">* Boost options require you to maintain the boosts or the key will be automatically revoked.</p>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Quick Links</h3>
@@ -1086,14 +1258,12 @@
                             <i class="fab fa-discord"></i> Discord & Download
                         </a>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Current Status</h3>
                         <div style="line-height: 1.6; opacity: 0.9;">
                             Offline - Check Discord for updates
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Version History</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
@@ -1106,14 +1276,307 @@
             </div>
         </div>
 
+        <div id="krnl-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <div class="executor-hero">
+                <h1 class="executor-title">Krnl</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 95% sunc Rate</div>
+                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Undetected</div>
+                    <div class="meta-item"><i class="fas fa-mobile-alt"></i> Multi-Platform</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Free Key System</div>
+                </div>
+                <div class="executor-status status-online">Status: Online</div>
+            </div>
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Krnl is a powerful multi-platform executor that remains undetected across all supported platforms. With a free key system and excellent performance, it's one of the most popular choices for Roblox exploitation.</p>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 95% sunc rate</li>
+                            <li>Available on Windows, Android, iOS, and VNG</li>
+                            <li>Undetected by anti-cheat systems</li>
+                            <li>Free key system with easy access</li>
+                            <li>Built-in script hub with auto-updating scripts</li>
+                            <li>Regular updates to bypass detection</li>
+                            <li>Completely free to use</li>
+                        </ul>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li><strong>Windows:</strong> 10/11 (64-bit), 4GB RAM</li>
+                            <li><strong>Android:</strong> 8.0+, 3GB RAM</li>
+                            <li><strong>iOS:</strong> iOS 14+, Jailbroken</li>
+                            <li><strong>VNG:</strong> Compatible device</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://krnl.cat" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="https://discord.gg/WNyYMek59Q" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            <div><strong>Windows:</strong> Online (Coming Soon)</div>
+                            <div><strong>Android:</strong> Online</div>
+                            <div><strong>iOS:</strong> Online</div>
+                            <div><strong>VNG:</strong> Online</div>
+                        </div>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v5.7.2</strong> - 2025-07-15<br>Improved iOS stability</p>
+                            <p><strong>v5.7.1</strong> - 2025-07-10<br>Fixed Android injection</p>
+                            <p><strong>v5.7.0</strong> - 2025-07-05<br>Added VNG support</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ronix-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <div class="executor-hero">
+                <h1 class="executor-title">Ronix</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 100% sunc Rate</div>
+                    <div class="meta-item"><i class="fas fa-mobile-alt"></i> Multi-Platform</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                    <div class="meta-item"><i class="fas fa-dollar-sign"></i> Free</div>
+                </div>
+                <div class="executor-status status-online">Status: Online</div>
+            </div>
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Ronix is a premium multi-platform executor with 100% SUNC rate and keyless access. While the Windows version is currently detected, the mobile versions remain undetected and offer excellent performance.</p>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 100% SUNC rate</li>
+                            <li>Available on Windows, Android, Mac, and VNG</li>
+                            <li>Keyless access for all platforms</li>
+                            <li>Built-in script hub with exclusive scripts</li>
+                            <li>Customizable UI with themes</li>
+                            <li>Regular updates with new features</li>
+                            <li>Completely free to use</li>
+                        </ul>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li><strong>Windows:</strong> 10/11 (64-bit), 4GB RAM (Detected)</li>
+                            <li><strong>Android:</strong> 8.0+, 3GB RAM (Undetected)</li>
+                            <li><strong>Mac:</strong> Big Sur+, Intel/Apple Silicon (Undetected)</li>
+                            <li><strong>VNG:</strong> Compatible device (Undetected)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://ronixstudios.com" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <a href="https://discord.gg/ronix" class="btn" target="_blank" style="display: block; text-align: center;">
+                            <i class="fab fa-discord"></i> Join Discord
+                        </a>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            <div><strong>Windows:</strong> Online (Detected)</div>
+                            <div><strong>Android:</strong> Online (Undetected)</div>
+                            <div><strong>Mac:</strong> Online (Undetected)</div>
+                            <div><strong>VNG:</strong> Online (Undetected)</div>
+                        </div>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v4.2.0</strong> - 2025-07-16<br>Added Mac support</p>
+                            <p><strong>v4.1.5</strong> - 2025-07-10<br>Improved VNG performance</p>
+                            <p><strong>v4.1.0</strong> - 2025-07-05<br>Added exclusive scripts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sirhurt-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <div class="executor-hero">
+                <h1 class="executor-title">SirHurt</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 8 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 100% sunc Rate</div>
+                    <div class="meta-item"><i class="fas fa-shield-alt"></i> Internal</div>
+                    <div class="meta-item"><i class="fab fa-windows"></i> Windows Only</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Paid</div>
+                </div>
+                <div class="executor-status status-online">Status: Online (Detected)</div>
+            </div>
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">SirHurt is a premium paid executor with 100% SUNC and UNC level 8 execution. While currently detected, it remains one of the most powerful options available for Windows users willing to pay for premium features.</p>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 8 execution with 100% SUNC rate</li>
+                            <li>Internal architecture for maximum performance</li>
+                            <li>Customizable UI with themes</li>
+                            <li>Built-in script hub with exclusive scripts</li>
+                            <li>24/7 customer support</li>
+                            <li>Regular updates with new features</li>
+                            <li>Discord community access</li>
+                        </ul>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">Pricing Options</h2>
+                        <table class="pricing-table">
+                            <thead>
+                                <tr>
+                                    <th>Duration</th>
+                                    <th>Price</th>
+                                    <th>Features</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>7 Days</td>
+                                    <td>$2.80</td>
+                                    <td>Basic access, Discord community</td>
+                                </tr>
+                                <tr>
+                                    <td>30 Days</td>
+                                    <td>$10.50</td>
+                                    <td>Full access, priority support</td>
+                                </tr>
+                                <tr>
+                                    <td>Lifetime</td>
+                                    <td>$100.00</td>
+                                    <td>Permanent access, all features</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="info-text" style="margin-top: 1rem; font-size: 0.9rem;">Payment methods: PayPal, Debit Card, Apple Pay, Google Pay, Crypto, Robux</p>
+                    </div>
+                </div>
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="#" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-shopping-cart"></i> Purchase
+                        </a>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Online - Currently Detected
+                        </div>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v3.5.0</strong> - 2025-07-15<br>Added new UI themes</p>
+                            <p><strong>v3.4.5</strong> - 2025-07-10<br>Improved injection</p>
+                            <p><strong>v3.4.0</strong> - 2025-07-05<br>Added exclusive scripts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="solara-page" class="executor-detail">
+            <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <div class="executor-hero">
+                <h1 class="executor-title">Solara</h1>
+                <div class="executor-meta">
+                    <div class="meta-item"><i class="fas fa-bolt"></i> Level 5 Execution</div>
+                    <div class="meta-item"><i class="fas fa-sync-alt"></i> 66% unc / 51% sunc</div>
+                    <div class="meta-item"><i class="fas fa-external-link-alt"></i> External</div>
+                    <div class="meta-item"><i class="fab fa-windows"></i> Windows Only</div>
+                    <div class="meta-item"><i class="fas fa-key"></i> Keyless</div>
+                </div>
+                <div class="executor-status status-online">Status: Online (Detected)</div>
+            </div>
+            <div class="executor-content">
+                <div class="executor-info">
+                    <div class="info-section">
+                        <h2 class="info-title">Overview</h2>
+                        <p class="info-text">Solara is a keyless external executor with moderate execution levels. While not as powerful as internal options, it offers a simple and straightforward experience for basic scripting needs.</p>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">Features</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Level 5 execution with 66% UNC and 51% SUNC</li>
+                            <li>External architecture for better security</li>
+                            <li>Keyless access</li>
+                            <li>Simple and lightweight interface</li>
+                            <li>Supports most common scripts</li>
+                            <li>Completely free to use</li>
+                        </ul>
+                    </div>
+                    <div class="info-section">
+                        <h2 class="info-title">System Requirements</h2>
+                        <ul class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
+                            <li>Windows 10 or 11 (64-bit)</li>
+                            <li>2GB RAM minimum</li>
+                            <li>.NET Framework 4.8</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="executor-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Quick Links</h3>
+                        <a href="https://getsolara.dev" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-bottom: 0.8rem;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Current Status</h3>
+                        <div style="line-height: 1.6; opacity: 0.9;">
+                            Online - Currently Detected
+                        </div>
+                    </div>
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Version History</h3>
+                        <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
+                            <p><strong>v2.3.0</strong> - 2025-07-15<br>Improved stability</p>
+                            <p><strong>v2.2.5</strong> - 2025-07-10<br>Fixed injection issues</p>
+                            <p><strong>v2.2.0</strong> - 2025-07-05<br>Added new features</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="community-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Community Hub</h1>
                 <p class="info-text">Connect with other SafeHaven users and join our partnered executor communities.</p>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
@@ -1133,7 +1596,7 @@
                                     Join Server
                                 </a>
                             </div>
-                              <div class="sidebar-card">
+                            <div class="sidebar-card">
                                 <h3 class="sidebar-title"><i class="fab fa-discord"></i> Dynamic</h3>
                                 <p style="margin-bottom: 1rem; opacity: 0.9;">Join the official Dynamic community.</p>
                                 <a href="https://discord.gg/getdynamic" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
@@ -1147,23 +1610,6 @@
                                     Join Server
                                 </a>
                             </div>
-
-
-
-
-
-
-
-
-
-
-
-<!-- COMMUNITY_INSERTION_POINT -->
-
-
-
-
-
                             <div class="sidebar-card">
                                 <h3 class="sidebar-title"><i class="fab fa-discord"></i> Nexora</h3>
                                 <p style="margin-bottom: 1rem; opacity: 0.9;">The official Nexora community.</p>
@@ -1171,7 +1617,6 @@
                                     Join Server
                                 </a>
                             </div>
-                          
                             <div class="sidebar-card">
                                 <h3 class="sidebar-title"><i class="fab fa-discord"></i> Cloudy</h3>
                                 <p style="margin-bottom: 1rem; opacity: 0.9;">Connect with Cloudy users.</p>
@@ -1186,10 +1631,23 @@
                                     Join Server
                                 </a>
                             </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Krnl</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Join the Krnl community.</p>
+                                <a href="https://discord.gg/WNyYMek59Q" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fab fa-discord"></i> Ronix</h3>
+                                <p style="margin-bottom: 1rem; opacity: 0.9;">Join the Ronix community.</p>
+                                <a href="https://discord.gg/ronix" class="btn btn-primary" target="_blank" style="display: block; text-align: center;">
+                                    Join Server
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Community Guidelines</h3>
@@ -1206,12 +1664,10 @@
 
         <div id="downloads-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Download Center</h1>
                 <p class="info-text">Secure downloads for all supported executors. All files are scanned and verified before being made available.</p>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
@@ -1235,7 +1691,7 @@
                                     <i class="fas fa-download"></i> Download
                                 </a>
                             </div>
-    <div class="sidebar-card">
+                            <div class="sidebar-card">
                                 <h3 class="sidebar-title"><i class="fas fa-external-link-alt"></i> Dynamic</h3>
                                 <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> N/A</p>
                                 <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> N/A</p>
@@ -1244,31 +1700,6 @@
                                     <i class="fas fa-download"></i> Download
                                 </a>
                             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- DOWNLOADS_INSERTION_POINT -->
-
-
-
-
-
-
-
-
-
-
-
                             <div class="sidebar-card">
                                 <h3 class="sidebar-title"><i class="fas fa-mobile-alt"></i> Nexora</h3>
                                 <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 4.0.1</p>
@@ -1278,12 +1709,11 @@
                                     <i class="fas fa-download"></i> Download
                                 </a>
                             </div>
-                           
                             <div class="sidebar-card">
                                 <h3 class="sidebar-title"><i class="fas fa-cloud"></i> Cloudy</h3>
                                 <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> N/A</p>
-                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong>  N/A</p>
-                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong>  N/A</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> N/A</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> N/A</p>
                                 <a href="https://getcloudy.xyz" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
                                     <i class="fas fa-download"></i> Download
                                 </a>
@@ -1297,9 +1727,35 @@
                                     <i class="fas fa-download"></i> Download
                                 </a>
                             </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-cat"></i> Krnl</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 5.7.2</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> Varies by platform</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-07-15</p>
+                                <a href="https://krnl.cat" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-rocket"></i> Ronix</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 4.2.0</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> Varies by platform</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-07-16</p>
+                                <a href="https://ronixstudios.com" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title"><i class="fas fa-sun"></i> Solara</h3>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Version:</strong> 2.3.0</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Size:</strong> 8.5MB</p>
+                                <p style="margin-bottom: 0.5rem; opacity: 0.9;"><strong>Updated:</strong> 2025-07-15</p>
+                                <a href="https://getsolara.dev" class="btn btn-primary" target="_blank" style="display: block; text-align: center; margin-top: 1rem;">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
                         </div>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Download Instructions</h2>
                         <ol class="info-text" style="padding-left: 1.5rem; line-height: 1.8;">
@@ -1312,7 +1768,6 @@
                         <p class="info-text" style="margin-top: 1rem; color: #ff6b6b;"><strong>Warning:</strong> Only download from official sources. Unofficial copies may contain malware.</p>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Security Information</h3>
@@ -1324,7 +1779,6 @@
                             <p>• From official sources</p>
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Common Issues</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
@@ -1339,16 +1793,13 @@
 
         <div id="support-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">Support Portal</h1>
                 <p class="info-text">Get help with executor issues by joining our Discord community.</p>
-
                 <a href="https://discord.gg/PcK323uR6B" class="btn btn-primary" target="_blank" style="margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;">
                     <i class="fab fa-discord"></i> Join Support Discord
                 </a>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
@@ -1366,7 +1817,6 @@
                             <p class="info-text">First check if the executor is up-to-date. Then verify the script is made for your executor version. Some scripts may need to be updated after Roblox patches.</p>
                         </div>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">Troubleshooting Guide</h2>
                         <div class="troubleshooting-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
@@ -1399,7 +1849,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Support Channels</h3>
@@ -1410,14 +1859,15 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Compatibility Matrix</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
                             <p><strong>Windows 10:</strong> All executors</p>
                             <p><strong>Windows 11:</strong> All executors</p>
-                            <p><strong>Android:</strong> Nexora only</p>
-                            <p><strong>MacOS:</strong> Nexora only</p>
+                            <p><strong>Android:</strong> Krnl, Nexora, Ronix</p>
+                            <p><strong>iOS:</strong> Krnl, Nexora</p>
+                            <p><strong>MacOS:</strong> Nexora, Ronix</p>
+                            <p><strong>VNG:</strong> Krnl, Ronix</p>
                         </div>
                     </div>
                 </div>
@@ -1426,12 +1876,10 @@
 
         <div id="about-page" class="executor-detail">
             <a href="#" class="back-btn" data-back="home"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-
             <div class="executor-hero">
                 <h1 class="executor-title">About SafeHaven</h1>
                 <p class="info-text">The premier hub for Roblox executor information, status monitoring, and community resources.</p>
             </div>
-
             <div class="executor-content">
                 <div class="executor-info">
                     <div class="info-section">
@@ -1445,7 +1893,6 @@
                             <li>Maintain up-to-date compatibility information</li>
                         </ul>
                     </div>
-
                     <div class="info-section">
                         <h2 class="info-title">The Creator</h2>
                         <div style="display: flex; gap: 2rem; align-items: center; margin-top: 1.5rem;">
@@ -1459,7 +1906,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="executor-sidebar">
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Core Values</h3>
@@ -1470,7 +1916,6 @@
                             <p><strong>Innovation:</strong> Always improving</p>
                         </div>
                     </div>
-
                     <div class="sidebar-card">
                         <h3 class="sidebar-title">Join Our Community</h3>
                         <div style="line-height: 1.6; opacity: 0.9; font-size: 0.9rem;">
@@ -1499,7 +1944,6 @@
     </footer>
 
     <script>
-
         function createBackground() {
             const background = document.getElementById('background');
             const squareCount = 15;
@@ -1532,6 +1976,7 @@
                 page.style.display = 'none';
             });
             document.getElementById(pageId).style.display = 'block';
+            window.scrollTo(0, 0);
         }
 
         function showExecutor(executorId) {
@@ -1539,6 +1984,42 @@
                 page.style.display = 'none';
             });
             document.getElementById(executorId).style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function filterExecutors() {
+            const searchTerm = document.getElementById('executor-search').value.toLowerCase();
+            const activePlatform = document.querySelector('.platform-btn.active').dataset.platform;
+            const executors = document.querySelectorAll('.executor-card');
+            let hasResults = false;
+
+            executors.forEach(executor => {
+                const name = executor.querySelector('.executor-name').textContent.toLowerCase();
+                const platforms = executor.dataset.platforms.split(' ');
+                
+                const nameMatch = name.includes(searchTerm);
+                const platformMatch = activePlatform === 'all' || platforms.includes(activePlatform);
+                
+                if (nameMatch && platformMatch) {
+                    executor.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    executor.style.display = 'none';
+                }
+            });
+
+            const noResults = document.createElement('div');
+            noResults.className = 'no-results';
+            noResults.textContent = 'No executors found matching your criteria.';
+            
+            const container = document.getElementById('executors-container');
+            const existingNoResults = container.querySelector('.no-results');
+            
+            if (!hasResults && !existingNoResults) {
+                container.appendChild(noResults);
+            } else if (hasResults && existingNoResults) {
+                existingNoResults.remove();
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1563,16 +2044,7 @@
                     showExecutor(executor);
                 });
             });
-            document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-executor]').forEach(card => {
-        card.querySelector('.btn[data-executor]').addEventListener('click', (e) => {
-            e.preventDefault();
-            const executorName = card.getAttribute('data-executor');
-            document.getElementById(`${executorName}-page`).style.display = 'block';
-            window.scrollTo(0, 0);
-        });
-    });
-});
+
             document.querySelectorAll('[data-back]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1592,6 +2064,16 @@
 
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     document.querySelector(`.nav-link[data-page="${link.getAttribute('data-page')}"]`).classList.add('active');
+                });
+            });
+
+            document.getElementById('executor-search').addEventListener('input', filterExecutors);
+
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterExecutors();
                 });
             });
         });
